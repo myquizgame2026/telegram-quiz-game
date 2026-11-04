@@ -1,0 +1,102 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>My Quiz Game</title>
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+<style>
+*{box-sizing:border-box}
+body{
+  margin:0;
+  padding:25px;
+  font-family:Arial,sans-serif;
+  background:linear-gradient(135deg,#101a45,#442080);
+  color:white;
+  text-align:center;
+}
+.card{
+  background:#ffffff18;
+  padding:25px;
+  border-radius:20px;
+  margin-top:35px;
+}
+button{
+  width:100%;
+  padding:15px;
+  margin:8px 0;
+  border:0;
+  border-radius:12px;
+  background:#8055ed;
+  color:white;
+  font-size:17px;
+}
+h1{color:#ffd76a}
+#question{font-size:20px}
+</style>
+</head>
+<body>
+<h1>🎮 My Quiz Game</h1>
+<div class="card">
+  <h2>Welcome!</h2>
+  <p>Play Quiz and earn points.</p>
+  <h3>⭐ Score: <span id="score">0</span></h3>
+  <p id="question">Ready to play?</p>
+  <div id="answers"></div>
+  <button onclick="startQuiz()">Start Quiz</button>
+</div>
+<script>
+const tg = window.Telegram.WebApp;
+tg.ready();
+tg.expand();
+
+const questions = [
+ {q:"What is the capital of Bangladesh?",
+  a:["Dhaka","Chittagong","Sylhet"],c:0},
+ {q:"How many days are in a week?",
+  a:["5","7","10"],c:1},
+ {q:"Which planet do we live on?",
+  a:["Mars","Venus","Earth"],c:2}
+];
+
+let index=0;
+let score=0;
+
+function startQuiz(){
+ index=0;
+ score=0;
+ document.getElementById("score").textContent=score;
+ showQuestion();
+}
+
+function showQuestion(){
+ if(index>=questions.length){
+  document.getElementById("question").textContent=
+    "Quiz completed! Final score: "+score;
+  document.getElementById("answers").innerHTML="";
+  return;
+ }
+
+ const q=questions[index];
+ document.getElementById("question").textContent=q.q;
+ document.getElementById("answers").innerHTML="";
+
+ q.a.forEach((answer,i)=>{
+  const btn=document.createElement("button");
+  btn.textContent=answer;
+  btn.onclick=()=>{
+   if(i===q.c){
+    score+=10;
+    tg.HapticFeedback.impactOccurred("light");
+   }
+   document.getElementById("score").textContent=score;
+   index++;
+   showQuestion();
+  };
+  document.getElementById("answers").appendChild(btn);
+ });
+}
+</script>
+</body>
+    </html>
